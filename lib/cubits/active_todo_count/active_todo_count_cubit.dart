@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages, avoid_print
+
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
@@ -8,11 +10,20 @@ part 'active_todo_count_state.dart';
 
 class ActiveTodoCountCubit extends Cubit<ActiveTodoCountState> {
   final TodoListCubit todoListCubit;
+  final int initialActiveTodoCount;
   late final StreamSubscription todoSubscription;
-  ActiveTodoCountCubit({required this.todoListCubit})
-      : super(ActiveTodoCountState.intial()) {
+  ActiveTodoCountCubit(
+      {required this.todoListCubit, required this.initialActiveTodoCount})
+      : super(ActiveTodoCountState(activeTodoCount: initialActiveTodoCount)) {
     todoSubscription =
-        todoListCubit.stream.listen((TodoListState todoListState) {});
+        todoListCubit.stream.listen((TodoListState todoListState) {
+      print(todoListState.toString());
+      final int currentActiveTodoCount = todoListState.todoList
+          .where((element) => !element.isCompleted)
+          .toList()
+          .length;
+      emit(state.copyWith(activeTodoCount: currentActiveTodoCount));
+    });
   }
 
   @override
