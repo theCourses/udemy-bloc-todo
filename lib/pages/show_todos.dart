@@ -9,48 +9,72 @@ class ShowTodos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final todos = context.watch<FilteredTodosCubit>().state.filteredTodos;
-    return ListView.separated(
-        primary: false,
-        shrinkWrap: true,
-        itemBuilder: (BuildContext context, int index) {
-          return Dismissible(
-              background: showBackgrount(0),
-              onDismissed: (_) {
-                context.read<TodoListCubit>().removeTodo(todos[index]);
-              },
-              confirmDismiss: (_) {
-                return showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Are you sure?'),
-                        content: const Text('Do you really want to delete?'),
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context, true);
-                              },
-                              child: const Text('Yes')),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context, false);
-                              },
-                              child: const Text('no')),
-                        ],
-                      );
-                    });
-              },
-              secondaryBackground: showBackgrount(1),
-              key: ValueKey(todos[index].id),
-              child: _TodoItem(todo: todos[index]));
-        },
-        separatorBuilder: (BuildContext context, int idx) {
-          return const Divider(
-            color: Colors.grey,
-          );
-        },
-        itemCount: todos.length);
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<TodoListCubit, TodoListState>(listener: (context, state) {
+          context.read<FilteredTodosCubit>().setFilteredTodos(
+              context.read<TodoFilterCubit>().state.filter,
+              state.todoList,
+              context.read<TodoSearchCubit>().state.searchTerm);
+        }),
+        BlocListener<TodoFilterCubit, TodoFilterState>(
+            listener: (context, state) {
+          context.read<FilteredTodosCubit>().setFilteredTodos(
+              state.filter,
+              context.read<TodoListCubit>().state.todoList,
+              context.read<TodoSearchCubit>().state.searchTerm);
+        }),
+        BlocListener<TodoSearchCubit, TodoSearchState>(
+            listener: (context, state) {
+          context.read<FilteredTodosCubit>().setFilteredTodos(
+              context.read<TodoFilterCubit>().state.filter,
+              context.read<TodoListCubit>().state.todoList,
+              state.searchTerm);
+        })
+      ],
+      child: ListView.separated(
+          primary: false,
+          shrinkWrap: true,
+          itemBuilder: (BuildContext context, int index) {
+            return Dismissible(
+                background: showBackgrount(0),
+                onDismissed: (_) {
+                  context.read<TodoListCubit>().removeTodo(todos[index]);
+                },
+                confirmDismiss: (_) {
+                  return showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Are you sure?'),
+                          content: const Text('Do you really want to delete?'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, true);
+                                },
+                                child: const Text('Yes')),
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context, false);
+                                },
+                                child: const Text('no')),
+                          ],
+                        );
+                      });
+                },
+                secondaryBackground: showBackgrount(1),
+                key: ValueKey(todos[index].id),
+                child: _TodoItem(todo: todos[index]));
+          },
+          separatorBuilder: (BuildContext context, int idx) {
+            return const Divider(
+              color: Colors.grey,
+            );
+          },
+          itemCount: todos.length),
+    );
   }
 
   Widget showBackgrount(int direction) {
@@ -70,7 +94,7 @@ class ShowTodos extends StatelessWidget {
 
 class _TodoItem extends StatefulWidget {
   final Todo todo;
-  const _TodoItem({super.key, required this.todo});
+  const _TodoItem({required this.todo});
 
   @override
   State<_TodoItem> createState() => __TodoItemState();
@@ -98,7 +122,7 @@ class __TodoItemState extends State<_TodoItem> {
         showDialog(
             context: context,
             builder: (context) {
-              bool _error = false;
+              bool error = false;
               textEditingController.text = widget.todo.desc;
 
               return StatefulBuilder(builder: (BuildContext build, setState) {
@@ -108,14 +132,14 @@ class __TodoItemState extends State<_TodoItem> {
                     controller: textEditingController,
                     autofocus: true,
                     decoration: InputDecoration(
-                        errorText: _error ? "Value cannot be empty" : null),
+                        errorText: error ? "Value cannot be empty" : null),
                   ),
                   actions: [
                     TextButton(
                         onPressed: () {
                           setState(() {
-                            _error = textEditingController.text.isEmpty;
-                            if (!_error) {
+                            error = textEditingController.text.isEmpty;
+                            if (!error) {
                               context.read<TodoListCubit>().editTodo(
                                   widget.todo.id, textEditingController.text);
                               Navigator.pop(context);

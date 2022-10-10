@@ -15,13 +15,13 @@ class TodoPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 25.0),
           child: Column(children: [
-            TodoHeader(),
-            CreateTodo(),
-            SizedBox(
+            const TodoHeader(),
+            const CreateTodo(),
+            const SizedBox(
               height: 12.0,
             ),
             SearchAndFilterTodo(),
-            ShowTodos()
+            const ShowTodos()
           ]),
         ),
       )),
