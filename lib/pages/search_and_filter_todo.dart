@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/cubits/cubits.dart';
 import 'package:todo_app/models/models.dart';
+import 'package:todo_app/utils/debounce.dart';
 
 class SearchAndFilterTodo extends StatelessWidget {
-  const SearchAndFilterTodo({super.key});
+  // Delays searching process. In that way we can save some resource.
+  // If there is no debounce every time user presses on letter, app searches through whole todo List
+  final debounce = Debounce(milliseconds: 1000);
+
+  SearchAndFilterTodo({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,9 @@ class SearchAndFilterTodo extends StatelessWidget {
               prefixIcon: Icon(Icons.search)),
           onChanged: (String? newSearchTerm) {
             if (newSearchTerm != null) {
-              context.read<TodoSearchCubit>().setSearchTerm(newSearchTerm);
+              debounce.run(() {
+                context.read<TodoSearchCubit>().setSearchTerm(newSearchTerm);
+              });
             }
           },
         ),
