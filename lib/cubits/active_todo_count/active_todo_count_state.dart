@@ -7,7 +7,7 @@ class ActiveTodoCountState extends Equatable {
   const ActiveTodoCountState({required this.activeTodoCount});
 
   factory ActiveTodoCountState.intial() {
-    return ActiveTodoCountState(activeTodoCount: 0);
+    return const ActiveTodoCountState(activeTodoCount: 0);
   }
 
   @override
