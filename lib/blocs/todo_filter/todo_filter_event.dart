@@ -10,7 +10,7 @@ abstract class TodoFilterEvent extends Equatable {
 
 class ChangeFilterEvent extends TodoFilterEvent {
   final Filter newFilter;
-  ChangeFilterEvent({
+  const ChangeFilterEvent({
     required this.newFilter,
   });
 
