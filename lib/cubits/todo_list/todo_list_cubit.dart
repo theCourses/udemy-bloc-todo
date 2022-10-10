@@ -37,7 +37,7 @@ class TodoListCubit extends Cubit<TodoListState> {
 
   void removeTodo(Todo todo) {
     final newTodos =
-        state.todoList.where((Todo todo) => todo.id != todo.id).toList();
+        state.todoList.where((Todo oldTodo) => todo.id != oldTodo.id).toList();
     emit(state.copyWith(todoList: newTodos));
   }
 }
