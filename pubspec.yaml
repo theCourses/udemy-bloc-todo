@@ -34,6 +34,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.1
+  rxdart: ^0.27.5
   uuid: ^3.0.6
 
 dev_dependencies:

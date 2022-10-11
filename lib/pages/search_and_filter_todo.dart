@@ -7,7 +7,6 @@ import 'package:todo_app/utils/debounce.dart';
 class SearchAndFilterTodo extends StatelessWidget {
   // Delays searching process. In that way we can save some resource.
   // If there is no debounce every time user presses on letter, app searches through whole todo List
-  final debounce = Debounce(milliseconds: 1000);
 
   SearchAndFilterTodo({super.key});
 
@@ -23,11 +22,9 @@ class SearchAndFilterTodo extends StatelessWidget {
               prefixIcon: Icon(Icons.search)),
           onChanged: (String? newSearchTerm) {
             if (newSearchTerm != null) {
-              debounce.run(() {
-                context
-                    .read<TodoSearchBloc>()
-                    .add(SetSearchTermEvent(newSearchTerm: newSearchTerm));
-              });
+              context
+                  .read<TodoSearchBloc>()
+                  .add(SetSearchTermEvent(newSearchTerm: newSearchTerm));
             }
           },
         ),

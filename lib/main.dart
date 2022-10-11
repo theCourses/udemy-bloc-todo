@@ -3,12 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/blocs/blocs.dart';
-import 'package:todo_app/blocs/filtered_todos/filtered_todos_bloc.dart';
-import 'package:todo_app/cubits/active_todo_count/active_todo_count_cubit.dart';
-import 'package:todo_app/cubits/filtered_todos/filtered_todos_cubit.dart';
-import 'package:todo_app/cubits/todo_filter/todo_filter_cubit.dart';
-import 'package:todo_app/cubits/todo_list/todo_list_cubit.dart';
-import 'package:todo_app/cubits/todo_search/todo_search_cubit.dart';
+import 'package:todo_app/cubits/cubits.dart';
 import 'package:todo_app/pages/todo_page.dart';
 
 void main() {
