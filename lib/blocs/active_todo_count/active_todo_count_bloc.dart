@@ -8,7 +8,12 @@ part 'active_todo_count_state.dart';
 
 class ActiveTodoCountBloc
     extends Bloc<ActiveTodoCountEvent, ActiveTodoCountState> {
-  ActiveTodoCountBloc() : super(ActiveTodoCountInitial()) {
-    on<ActiveTodoCountEvent>((event, emit) {});
+  final int initialActiveTodoCount;
+
+  ActiveTodoCountBloc({required this.initialActiveTodoCount})
+      : super(ActiveTodoCountState(activeTodoCount: initialActiveTodoCount)) {
+    on<ChangeActiveTodoCountEvent>((event, emit) {
+      emit(state.copyWith(activeTodoCount: event.newActiveTodoCount));
+    });
   }
 }

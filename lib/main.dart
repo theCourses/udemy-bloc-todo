@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/blocs/blocs.dart';
+import 'package:todo_app/blocs/filtered_todos/filtered_todos_bloc.dart';
 import 'package:todo_app/cubits/active_todo_count/active_todo_count_cubit.dart';
 import 'package:todo_app/cubits/filtered_todos/filtered_todos_cubit.dart';
 import 'package:todo_app/cubits/todo_filter/todo_filter_cubit.dart';
@@ -19,18 +21,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<TodoFilterCubit>(create: (context) => TodoFilterCubit()),
-        BlocProvider<TodoSearchCubit>(create: (context) => TodoSearchCubit()),
-        BlocProvider<TodoListCubit>(create: (context) => TodoListCubit()),
-        BlocProvider<ActiveTodoCountCubit>(
-          create: (context) => ActiveTodoCountCubit(
+        BlocProvider<TodoFilterBloc>(create: (context) => TodoFilterBloc()),
+        BlocProvider<TodoSearchBloc>(create: (context) => TodoSearchBloc()),
+        BlocProvider<TodoListBloc>(create: (context) => TodoListBloc()),
+        BlocProvider<ActiveTodoCountBloc>(
+          create: (context) => ActiveTodoCountBloc(
             initialActiveTodoCount:
-                context.read<TodoListCubit>().state.todoList.length,
+                context.read<TodoListBloc>().state.todoList.length,
           ),
         ),
-        BlocProvider<FilteredTodosCubit>(
-            create: (context) => FilteredTodosCubit(
-                  initialTodos: context.read<TodoListCubit>().state.todoList,
+        BlocProvider<FilteredTodosBloc>(
+            create: (context) => FilteredTodosBloc(
+                  initialTodos: context.read<TodoListBloc>().state.todoList,
                 ))
       ],
       child: MaterialApp(

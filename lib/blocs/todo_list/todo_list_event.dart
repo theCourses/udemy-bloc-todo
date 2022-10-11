@@ -22,7 +22,7 @@ class AddTodoEvent extends TodoListEvent {
 }
 
 class EditTodoEvent extends TodoListEvent {
-  final int id;
+  final String id;
   final String todoDesc;
 
   const EditTodoEvent({
@@ -38,19 +38,17 @@ class EditTodoEvent extends TodoListEvent {
 }
 
 class ToggleTodoEvent extends TodoListEvent {
-  final int id;
-  final bool isCompleted;
+  final String id;
 
   const ToggleTodoEvent({
     required this.id,
-    required this.isCompleted,
   });
 
   @override
-  String toString() => 'ToggleTodoEvent(id: $id, isCompleted: $isCompleted)';
+  String toString() => 'ToggleTodoEvent(id: $id)';
 
   @override
-  List<Object> get props => [id, isCompleted];
+  List<Object> get props => [id];
 }
 
 class RemoveTodoEvent extends TodoListEvent {

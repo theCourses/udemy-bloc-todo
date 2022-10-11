@@ -1,10 +1,25 @@
 part of 'active_todo_count_bloc.dart';
 
-abstract class ActiveTodoCountState extends Equatable {
-  const ActiveTodoCountState();
-  
-  @override
-  List<Object> get props => [];
-}
+class ActiveTodoCountState extends Equatable {
+  final int activeTodoCount;
 
-class ActiveTodoCountInitial extends ActiveTodoCountState {}
+  const ActiveTodoCountState({required this.activeTodoCount});
+
+  factory ActiveTodoCountState.intial() {
+    return const ActiveTodoCountState(activeTodoCount: 0);
+  }
+
+  @override
+  List<Object> get props => [activeTodoCount];
+
+  ActiveTodoCountState copyWith({
+    int? activeTodoCount,
+  }) {
+    return ActiveTodoCountState(
+      activeTodoCount: activeTodoCount ?? this.activeTodoCount,
+    );
+  }
+
+  @override
+  bool get stringify => true;
+}

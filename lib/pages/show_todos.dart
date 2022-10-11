@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_app/cubits/cubits.dart';
+import 'package:todo_app/blocs/blocs.dart';
+import 'package:todo_app/blocs/filtered_todos/filtered_todos_bloc.dart';
 import 'package:todo_app/models/models.dart';
 
 class ShowTodos extends StatelessWidget {
@@ -8,28 +9,28 @@ class ShowTodos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final todos = context.watch<FilteredTodosCubit>().state.filteredTodos;
+    final todos = context.watch<FilteredTodosBloc>().state.filteredTodos;
     return MultiBlocListener(
       listeners: [
-        BlocListener<TodoListCubit, TodoListState>(listener: (context, state) {
-          context.read<FilteredTodosCubit>().setFilteredTodos(
-              context.read<TodoFilterCubit>().state.filter,
-              state.todoList,
-              context.read<TodoSearchCubit>().state.searchTerm);
+        BlocListener<TodoListBloc, TodoListState>(listener: (context, state) {
+          context.read<FilteredTodosBloc>().add(SetFilteredTodosEvent(
+              filter: context.read<TodoFilterBloc>().state.filter,
+              todoList: state.todoList,
+              searchTerm: context.read<TodoSearchBloc>().state.searchTerm));
         }),
-        BlocListener<TodoFilterCubit, TodoFilterState>(
+        BlocListener<TodoFilterBloc, TodoFilterState>(
             listener: (context, state) {
-          context.read<FilteredTodosCubit>().setFilteredTodos(
-              state.filter,
-              context.read<TodoListCubit>().state.todoList,
-              context.read<TodoSearchCubit>().state.searchTerm);
+          context.read<FilteredTodosBloc>().add(SetFilteredTodosEvent(
+              filter: state.filter,
+              todoList: context.read<TodoListBloc>().state.todoList,
+              searchTerm: context.read<TodoSearchBloc>().state.searchTerm));
         }),
-        BlocListener<TodoSearchCubit, TodoSearchState>(
+        BlocListener<TodoSearchBloc, TodoSearchState>(
             listener: (context, state) {
-          context.read<FilteredTodosCubit>().setFilteredTodos(
-              context.read<TodoFilterCubit>().state.filter,
-              context.read<TodoListCubit>().state.todoList,
-              state.searchTerm);
+          context.read<FilteredTodosBloc>().add(SetFilteredTodosEvent(
+              filter: context.read<TodoFilterBloc>().state.filter,
+              todoList: context.read<TodoListBloc>().state.todoList,
+              searchTerm: state.searchTerm));
         })
       ],
       child: ListView.separated(
@@ -39,7 +40,9 @@ class ShowTodos extends StatelessWidget {
             return Dismissible(
                 background: showBackgrount(0),
                 onDismissed: (_) {
-                  context.read<TodoListCubit>().removeTodo(todos[index]);
+                  context
+                      .read<TodoListBloc>()
+                      .add(RemoveTodoEvent(removeTodo: todos[index]));
                 },
                 confirmDismiss: (_) {
                   return showDialog(
@@ -140,8 +143,9 @@ class __TodoItemState extends State<_TodoItem> {
                           setState(() {
                             error = textEditingController.text.isEmpty;
                             if (!error) {
-                              context.read<TodoListCubit>().editTodo(
-                                  widget.todo.id, textEditingController.text);
+                              context.read<TodoListBloc>().add(EditTodoEvent(
+                                  id: widget.todo.id,
+                                  todoDesc: textEditingController.text));
                               Navigator.pop(context);
                             }
                           });
@@ -161,7 +165,9 @@ class __TodoItemState extends State<_TodoItem> {
       leading: Checkbox(
         value: widget.todo.isCompleted,
         onChanged: (bool? checked) {
-          context.read<TodoListCubit>().toggleTodo(widget.todo.id);
+          context.read<TodoListBloc>().add(ToggleTodoEvent(
+                id: widget.todo.id,
+              ));
         },
       ),
     );
