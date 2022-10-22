@@ -16,15 +16,13 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
   }
 
   void _addTodo(AddTodoEvent event, Emitter<TodoListState> emit) {
-    emit(state
-        .copyWith(todoList: [...state.todoList, Todo(desc: event.todoDesc)]));
+    emit(state.copyWith(todoList: [...state.todoList, Todo(desc: event.todoDesc)]));
   }
 
   void _editTodo(EditTodoEvent event, Emitter<TodoListState> emit) {
     final newTodos = state.todoList.map((Todo todo) {
       if (todo.id == event.id) {
-        return Todo(
-            id: todo.id, desc: event.todoDesc, isCompleted: todo.isCompleted);
+        return Todo(id: todo.id, desc: event.todoDesc, isCompleted: todo.isCompleted);
       }
       return todo;
     }).toList();
@@ -34,13 +32,15 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
   void _toggleTodo(ToggleTodoEvent event, Emitter<TodoListState> emit) {
     final newTodos = state.todoList.map((Todo todo) {
       if (todo.id == event.id) {
-        return Todo(
-            id: todo.id, desc: todo.desc, isCompleted: !todo.isCompleted);
+        return Todo(id: todo.id, desc: todo.desc, isCompleted: !todo.isCompleted);
       }
       return todo;
     }).toList();
     emit(state.copyWith(todoList: newTodos));
   }
 
-  void _removeTodo(RemoveTodoEvent event, Emitter<TodoListState> emit) {}
+  void _removeTodo(RemoveTodoEvent event, Emitter<TodoListState> emit) {
+    final newTodos = state.todoList.where((Todo element) => element.id != event.removeTodo.id).toList();
+    emit(state.copyWith(todoList: newTodos));
+  }
 }
