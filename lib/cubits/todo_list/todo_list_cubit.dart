@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:todo_app/models/models.dart';
@@ -35,7 +37,7 @@ class TodoListCubit extends Cubit<TodoListState> {
 
   void removeTodo(Todo todo) {
     final newTodos =
-        state.todoList.where((Todo todo) => todo.id != todo.id).toList();
+        state.todoList.where((Todo oldTodo) => todo.id != oldTodo.id).toList();
     emit(state.copyWith(todoList: newTodos));
   }
 }
